@@ -271,7 +271,8 @@ layouts = [
 
 
 widget_defaults = dict(
-    font='Hack Nerd Font Mono',
+    # font='Hack Nerd Font Mono',
+    font='JetBrains Mono',
     fontsize=10,
     padding=3,
     # background=def_colors["*background"],
@@ -350,12 +351,10 @@ screens = [
                 ),
 
                 wttrweather.WttrWeather(
-                    location='Fábiánháza',
+                    location='Budapest',
                     format="{c}🌡{t:>6}",
                     units='&m',
-                    # execute=myTerm + ' -e weatc',
                     update_interval=600,
-                    # **widget_defaults
                 ),
                 widget.Sep(
                     **sep_set
