@@ -38,6 +38,7 @@ import wttrweather
 import mpdwidget
 import time
 import custom
+import clock
 
 from typing import List  # noqa: F401
 
@@ -384,14 +385,14 @@ screens = [
                     **sep_set
                 ),
 
-                widget.ThermalSensor(
-                    fmt="🌡️ {:>6}",
-                    # tag_sensor="Tccd1",
-                ),
+                # widget.ThermalSensor(
+                #     fmt="🌡️ {:>6}",
+                #     # tag_sensor="Tccd1",
+                # ),
 
-                widget.Sep(
-                    **sep_set
-                ),
+                # widget.Sep(
+                #     **sep_set
+                # ),
 
                 widget.CPU(
                     format="🏭 {load_percent:>5}%",
@@ -416,7 +417,7 @@ screens = [
                 ),
 
                 # widget.Clock(format='%Y-%m-%d %a %I:%M %p',),
-                widget.Clock(
+                clock.Clock(
                     format="⏳ %H:%M",
                     format_alt="📆 %Y-%m-%d %H:%M",
                 ),
