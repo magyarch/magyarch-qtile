@@ -1,0 +1,18 @@
+#! /usr/bin/env python3
+
+import psutil
+
+fa = False
+
+data = psutil.sensors_temperatures(fahrenheit=fa)
+
+if fa:
+    unit = "°F"
+else:
+    unit = "°C"
+
+
+for i in data.keys():
+    print(f'\n{i}\n')
+    for x in data.get(i):
+        print(f'\t{x.label}: {x.current:.1f}{unit} ')
