@@ -39,5 +39,9 @@ class SENSORS(base.ThreadedPollText):
             for j in val.keys():
                 self.format = "{" + j + "}"
                 break
+        try:
+            out = self.format.format(**val)
+        except KeyError:
+            out = "N/A"
 
-        return self.format.format(**val)
+        return out
