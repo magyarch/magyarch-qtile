@@ -3,6 +3,7 @@
 import psutil
 
 fa = False
+tag = "{Tccd1, Tccd1}"
 
 data = psutil.sensors_temperatures(fahrenheit=fa)
 
@@ -10,9 +11,20 @@ if fa:
     unit = "°F"
 else:
     unit = "°C"
-
+val = {}
 
 for i in data.keys():
     print(f'\n{i}\n')
     for x in data.get(i):
         print(f'\t{x.label}: {x.current:.1f}{unit} ')
+        val[x.label] = f'{x.current:.1f}{unit}'
+
+print(val)
+if not tag:
+    for k in val.keys():
+        tag = k
+        print(k)
+        print(tag)
+        break
+# print(''.join(str(key) + ": " + str(value) for key, value in val.items(tag)))
+print(tag + ": " + "tag".format(**val))

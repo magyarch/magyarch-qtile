@@ -1,45 +1,17 @@
-# Copyright (c) 2010 Aldo Cortesi
-# Copyright (c) 2010, 2014 dequis
-# Copyright (c) 2012 Randall Ma
-# Copyright (c) 2012-2014 Tycho Andersen
-# Copyright (c) 2012 Craig Barnes
-# Copyright (c) 2013 horsik
-# Copyright (c) 2013 Tao Sauvage
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-# c = ("*background", "*foreground", "*color0", "*color1", "*color2", "*color3", "*color4", "*color5", "*color6", "*color7", "*color8", "*color9", "*color10", "*color11", "*color12", "*color13", "*color14", "*color15": )
-
+# Copyright (c) 2020 MagyArch Linuy
 
 
 from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.lazy import lazy
 from libqtile import layout, bar, widget, hook
-from libqtile.log_utils import logger
-import os
 from os import getenv
 import wttrweather
 import mpdwidget
-import time
+import re
 import custom
 import clock
-
+import my_sensors
+from collections import namedtuple
 from typing import List  # noqa: F401
 
 mod = "mod4"
@@ -47,86 +19,65 @@ mod = "mod4"
 term = getenv("TERMINAL")
 home = getenv("HOME")
 browser = getenv("BROWSER")
-termfloat = getenv("TERMFLOAT")
+termfloat = getenv("TERMFLOAT") + " --geometry 110x30 "
 
-def_colors = {
-    '*background': '#2f2b26', '*foreground': '#c3cdc8',
-    '*color0': '#036947', '*color1': '#987351',
-    '*color2': '#2e8b57', '*color3': '#afc246',
-    '*color4': '#44b4cf', '*color5': '#8bb6ac',
-    '*color6': '#36dbc0', '*color7': '#54ba98',
-    '*color8': '#137957', '*color9': '#865b39',
-    '*color10': '#09a573', '*color11': '#95aa30',
-    '*color12': '#2593a6', '*color13': '#7c9c96',
-    '*color14': '#29bdd1', '*color15': '#cbffff'
+colors = {
+    'background': '#2f2b26', 'foreground': '#c3cdc8',
+    'color0': '#036947', 'color1': '#987351',
+    'color2': '#2e8b57', 'color3': '#afc246',
+    'color4': '#44b4cf', 'color5': '#8bb6ac',
+    'color6': '#36dbc0', 'color7': '#54ba98',
+    'color8': '#137957', 'color9': '#865b39',
+    'color10': '#09a573', 'color11': '#95aa30',
+    'color12': '#2593a6', 'color13': '#7c9c96',
+    'color14': '#29bdd1', 'color15': '#cbffff'
 }
 
 values = (
-    '*background', '*foreground', '*color0',
-    '*color1', '*color2', '*color3', '*color4',
-    '*color5', '*color6', '*color7', '*color8',
-    '*color9', '*color10', '*color11', '*color12',
-    '*color13', '*color14', '*color15'
+    'background', 'foreground', 'color0',
+    'color1', 'color2', 'color3', 'color4',
+    'color5', 'color6', 'color7', 'color8',
+    'color9', 'color10', 'color11', 'color12',
+    'color13', 'color14', 'color15'
 )
 
-with open(os.path.expanduser('~/.Xresources')) as f:
+with open(home + "/.Xresources") as f:
     data = f.readlines()
 
 for x in data:
     for y in values:
-        if y == x.split(":")[0].strip():
-            def_colors[y] = x.split(":")[1].strip()
+        # match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', x.split(":")[1].strip())
+        if y == x.split(":")[0].strip().replace("*", "") and re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', x.split(":")[1].strip()):
+            colors[y] = x.split(":")[1].strip()
 
-
-# a = [x.split(":")[1].strip() for x in data if "*background" in x]
-# b = [x.split(":")[1].strip() for x in data if "*foreground" in x]
-# get_wihite = [x.split(":")[1].strip() for x in data if "white" in x]
-# get_red = [x.split(":")[1].strip() for x in data if "red" in x]
-
-
-def make_sticky(qtile, *args):
-    qtile.cmd_spawn("urxvt")
-    time.sleep(0.5)
-    a = qtile.current_window
-    screen_x = qtile.current_screen.width // 2 - 400
-    screen_y = qtile.current_screen.height // 2 - 300
-    # b = qtile.find_screen
-    logger.debug(screen_x)
-    logger.debug(screen_y)
-    a.float_x = 620
-    a.float_y = 20
-    a.float_height = 600
-    a.float_width = 800
-    a.floating = True
-
-
-def pic(qtile):
-    # subprocess.Popen(["maim $(xdg-user-dir PICTURES)/pic-full-$(date +%Y-%m-%d-%H:%M:%S).png"], shell=True)
-    qtile.cmd_spawn("maim '$(xdg-user-dir PICTURES)/pic-full-$(date +%Y-%m-%d-%H:%M:%S).png'")
+Colors = namedtuple('Colors', sorted(colors))
+color = Colors(**colors)
 
 
 keys = [
     # Switch between windows in current stack pane
-    # Key([mod], "j", lazy.function(make_sticky)),
+
+    # No modifyers
+
+    # Key([], "Print", lazy.spawn("scrot '%Y-%m-%d-%H:%M:%S-pic_screen.jpg' -e 'mv $f $$(xdg-user-dir PICTURES)'")),
     Key([], "F10", lazy.spawn("amixer set Master 5%-")),
     Key([], "F11", lazy.spawn("amixer set Master 5%+")),
+
+    # Key image
+
     Key([], "F12", lazy.spawn(["feh", home + "/.config/qtile/no_modifier.png"])),
     Key([mod], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4.png"])),
     Key([mod, "control"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-control.png"])),
     Key([mod, "mod1"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-mod1.png"])),
     Key([mod, "shift"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-shift.png"])),
+    Key(["mod1"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod1.png"])),
 
-    Key([], "Print", lazy.spawn("scrot '%Y-%m-%d-%H:%M:%S-pic_screen.jpg' -e 'mv $f $$(xdg-user-dir PICTURES)'")),
-
-
-    #############################
+    # Mod4 (Super) +
 
     Key([mod], "b", lazy.hide_show_bar(position='top')),
     Key([mod], "c", lazy.spawn("power")),
-    Key([mod], "d", lazy.spawn("rofi -show run")),
+    Key([mod], "d", lazy.spawn("dmenu_run -i -p 'Search' -nb '#2f2b26' -sb '#2e8b57' -fn 'JetBrains Mono Medium-12'")),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
-    # Key([mod], "h", lazy.layout.left()),
-    # Key([mod], "j", lazy.layout.down()),
     Key([mod], "i", lazy.spawn(term + " -e htop")),
     Key([mod], "n", lazy.spawn(term + " -e newsboat")),
     Key([mod], "p", lazy.spawn("discord")),
@@ -135,9 +86,21 @@ keys = [
     Key([mod], "w", lazy.spawn(browser)),
     Key([mod], "F2", lazy.spawn("edconf.sh")),
     Key([mod], "F6", lazy.spawn(termfloat + " -e cava")),
-    # Key([mod], "F7", lazy.spawn(["maim $(xdg-user-dir PICTURES)/pic-full-$(date +%Y-%m-%d-%H:%M:%S).png"], shell=True)),
+    Key([mod], "F7", lazy.spawn("maim_save")),
+    Key([mod], "F8", lazy.spawn("maimpick")),
+    Key([mod], "F9", lazy.spawn("dmenumount")),
+    Key([mod], "F10", lazy.spawn("dmenuumount")),
     Key([mod], "Return", lazy.spawn(term)),
+    Key([mod], "space", lazy.prev_layout()),
     Key([mod], "Scroll_Lock", lazy.spawn("run_screenkey")),
+    Key([mod], "KP_Home", lazy.spawn("dmenurecord")),
+    Key([mod], "KP_End", lazy.spawn("live.sh")),
+
+    # opacity
+    Key([mod], "comma", lazy.window.down_opacity()),
+    Key([mod, "shift"], "comma", lazy.window.up_opacity()),
+
+
 
     # ######### LAYOUT ################
 
@@ -175,29 +138,42 @@ keys = [
     Key([mod, "control"], "Left", lazy.layout.grow_left()),
     Key([mod, "control"], "Right", lazy.layout.grow_right()),
 
-    Key([mod], "n", lazy.window.toggle_floating()),
+    # Mod4 (Super) + shift +
 
-    Key([mod, "shift"], "c", lazy.spawn(termfloat + " -g 70x20-620+30 -e calcurse")),
+    Key([mod, "shift"], "c", lazy.spawn(termfloat + "-e calcurse")),
+    Key([mod, "shift"], "d", lazy.spawn("rofi -show run")),
     Key([mod, "shift"], "e", lazy.spawn("subl3"),
         lazy.spawn("subl")
         ),
     Key([mod, "shift"], "i", lazy.spawn(term + " -e gtop")),
     Key([mod, "shift"], "n", lazy.spawn(termfloat + " -e ncmpcpp")),
     Key([mod, "shift"], "p", lazy.spawn("pcmanfm")),
+    Key([mod, "shift"], "r", lazy.restart()),
+    Key([mod, "shift"], "x", lazy.spawm("killall ffmpeg")),
     Key([mod, "shift"], "w", lazy.spawn("firefox")),
     Key([mod, "shift"], "Return", lazy.spawn(termfloat)),
-    Key([mod, "shift"], "space", lazy.layout.rotate()),
 
+    # Mod4 (Super) + mod1 (Alt) +
+
+    Key(["mod1"], "a", lazy.spawn("pavucontrol")),
     Key([mod, "mod1"], "q", lazy.shutdown()),
     Key([mod, "mod1"], "r", lazy.restart()),
+    Key([mod, "mod1"], "space", lazy.prev_layout()),
+    Key([mod, "mod1"], "Tab", lazy.screen.prev_group()),
+
+    # mod1 (Alt) +
+
+    Key(["mod1"], "Tab", lazy.screen.next_group()),
 
 ]
 
 groups = []
 
-group_names = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+group_names = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
 
-group_layouts = ["bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp"]
+group_layouts = ("bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "floating", "bsp")
+
+group_labels = ("", "", "", "", "", "", "", "", "", "")
 
 
 for i in range(len(group_names)):
@@ -205,6 +181,7 @@ for i in range(len(group_names)):
         Group(
             name=group_names[i],
             layout=group_layouts[i].lower(),
+            # label=group_labels[i],
         ))
 
 
@@ -230,11 +207,10 @@ for i in groups:
 
 
 layout_defaults = dict(
-    border_focus="#228B22",
-    border_norma="#000000",
+    border_focus=color.color2,
+    border_normal=color.background,
     border_width=2,
 )
-extension_defaults1 = layout_defaults.copy()
 
 
 layouts = [
@@ -243,12 +219,11 @@ layouts = [
         margin=5,
         fair=True,
         grow_amount=5,
-        **extension_defaults1,
+        **layout_defaults,
     ),
 
     layout.Stack(
-        num_stacks=2,
-        **extension_defaults1,
+        **layout_defaults,
     ),
     # Try more layouts by unleashing below layouts.
     # layout.Columns(),
@@ -257,15 +232,14 @@ layouts = [
     # layout.MonadWide(),
     # layout.RatioTile(),
     layout.Tile(
-        shift_windows=True,
+        **layout_defaults,
     ),
 
     # layout.TreeTab(),
     # layout.VerticalTile(),
     # layout.Zoomy(),
-    layout.Floating(),
-    layout.Slice(
-        wname="htop",
+    layout.Floating(
+        **layout_defaults,
     ),
 
 ]
@@ -276,68 +250,75 @@ widget_defaults = dict(
     font='JetBrains Mono',
     fontsize=10,
     padding=3,
-    # background=def_colors["*background"],
-    background="#000031",
-    # foreground="#228B22",
-    foreground=def_colors["*foreground"],
-    colour_no_updates=def_colors["*background"],
-    colour_have_updates="#228B22",
-    inactive="#555555",
-    active="#00ff00",
+    background=color.background,
+    foreground=color.foreground,
+    colour_no_updates=color.foreground,
+    colour_have_updates=color.color4,
 
 )
 extension_defaults = widget_defaults.copy()
 
 sep_set = dict(
     linewidth=1,
-    foreground="#0000ff",
+    foreground=color.color10,
 )
 
 
 def open_update(qtile):
-    qtile.cmd_spawn('alacritty -e updatepackage')
+    qtile.cmd_spawn(term + ' -e updatepackage')
 
 
 def open_ncmpcpp(qtile):
-    qtile.cmd_spawn("alacritty -e ncmpcpp")
+    qtile.cmd_spawn(term + " -e ncmpcpp")
 
 
 def open_power(qtile):
     qtile.cmd_spawn("power")
 
 
-# colors = set_colors.copy()
-
 screens = [
     Screen(
         top=bar.Bar(
             [
-                # widget.CurrentLayout(),
-
                 widget.GroupBox(
                     rounded=False,
                     center_aligned=True,
                     highlight_method="block",
-                    this_current_screen_border="#555555",
-                    this_screen_border=def_colors["*color0"],
+                    # this_current_screen_border="#555555",
+                    this_current_screen_border=color.color0,
+                    this_screen_border=color.color0,
                     urgent_alert_method="block",
-                    urgent_border="#ffffff",
+                    urgent_border=color.color10,
                     urgent_text="#000000",
                     borderwidth=5,
-                    block_highlight_text_color="#ffffff",
+                    block_highlight_text_color=color.color15,
                     margin_x=2,
                     margin_y=3,
                     disable_drag=True,
+                    # inactive="#555555",
+                    inactive=color.color1,
+                    active=color.foreground,
+                    # hide_unused=True
+                    # if set group label sets, small icons.
+                    # fontsize=20,
                 ),
 
                 widget.CurrentLayoutIcon(
                     scale=0.5,
                 ),
-                widget.Prompt(
-                    prompt="Run: ",
-                ),
+                # widget.Prompt(
+                #     background='#2e8b57',
+                #     foreground='#000000',
+                #     cursor_color='000000',
+                #     prompt="Search: ",
+                #     # markup=False,
+                #     # bell_style="visual",
+                #     # max_history=100,
+                # ),
 
                 widget.WindowName(),
+                # widget.TextBox("default config", name="default"),
+
 
                 mpdwidget.Mpd(
                     fmt_playing='%e/%l %s [%v%%]',
@@ -346,16 +327,29 @@ screens = [
                     reconnect_interval=1,
                     foreground_progress="#ff8c00",
                 ),
+                # widget.Mpd2(),
 
                 widget.Sep(
                     **sep_set,
                 ),
 
                 wttrweather.WttrWeather(
-                    location='Budapest',
-                    format="{c}🌡{t:>6}",
+                    location="Fabianhaza",
+
+                    # Format
+                    # c    Weather condition,
+                    # C    Weather condition textual name,
+                    # h    Humidity,
+                    # t    Temperature (Actual),
+                    # f    Temperature (Feels Like),
+                    # w    Wind,
+                    # l    Location,
+                    # m    Moonphase 🌑🌒🌓🌔🌕🌖🌗🌘,
+                    # p    precipitation (mm),
+                    # P    pressure (hPa),
+                    format="{c}{t:>6}",
                     units='&m',
-                    update_interval=600,
+                    update_interval=10,
                 ),
                 widget.Sep(
                     **sep_set
@@ -385,14 +379,24 @@ screens = [
                     **sep_set
                 ),
 
-                # widget.ThermalSensor(
-                #     fmt="🌡️ {:>6}",
-                #     # tag_sensor="Tccd1",
-                # ),
 
-                # widget.Sep(
-                #     **sep_set
-                # ),
+                my_sensors.SENSORS(
+                    # Run $HOME/.config/qtile/scripts/temp_data
+                    # Output:
+                    #       Composite: 38.9°C
+                    #       Sensor 1: 38.9°C
+                    #       Sensor 2: 44.9°C
+                    #       ...
+                    # set:
+                    # format="{Composite}" or format="{Composite} {Sensor 1}"
+
+                    format="🌡️ {Tccd1:>6}",
+                    update_interval=2.0
+                ),
+
+                widget.Sep(
+                    **sep_set
+                ),
 
                 widget.CPU(
                     format="🏭 {load_percent:>5}%",
@@ -410,13 +414,13 @@ screens = [
                 widget.Volume(
                     fmt="{:>4}",
                     step=5,
+                    # emoji=True,
                 ),
 
                 widget.Sep(
                     **sep_set
                 ),
 
-                # widget.Clock(format='%Y-%m-%d %a %I:%M %p',),
                 clock.Clock(
                     format="⏳ %H:%M",
                     format_alt="📆 %Y-%m-%d %H:%M",
@@ -425,7 +429,8 @@ screens = [
                     **sep_set
                 ),
                 widget.TextBox(
-                    text="  ",
+                    text="",
+                    padding=5,
                     fontsize=20,
                     mouse_callbacks={'Button1': open_power},
                 ),
@@ -463,23 +468,28 @@ follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
 
-floating_layout = layout.Floating(float_rules=[
-    # Run the utility of `xprop` to see the wm class and name of an X client.
-    {'wmclass': 'confirm'},
-    {'wmclass': 'dialog'},
-    {'wmclass': 'download'},
-    {'wmclass': 'error'},
-    {'wmclass': 'file_progress'},
-    {'wmclass': 'notification'},
-    {'wmclass': 'splash'},
-    {'wmclass': 'toolbar'},
-    {'wmclass': 'confirmreset'},  # gitk
-    {'wmclass': 'makebranch'},  # gitk
-    {'wmclass': 'maketag'},  # gitk
-    {'wname': 'branchdialog'},  # gitk
-    {'wname': 'pinentry'},  # GPG key password entry
-    {'wmclass': 'ssh-askpass'},  # ssh-askpass
-],
+floating_layout = layout.Floating(
+    float_rules=[
+        # Run the utility of `xprop` to see the wm class and name of an X client.
+        {'wmclass': 'confirm'},
+        {'wmclass': 'dialog'},
+        {'wmclass': 'download'},
+        {'wmclass': 'error'},
+        {'wmclass': 'file_progress'},
+        {'wmclass': 'notification'},
+        {'wmclass': 'splash'},
+        {'wmclass': 'toolbar'},
+        {'wmclass': 'confirmreset'},  # gitk
+        {'wmclass': 'makebranch'},  # gitk
+        {'wmclass': 'maketag'},  # gitk
+        {'wmclass': 'feh'},  # gitk
+        {'wmclass': "URxvt"},  # gitk
+        {'wname': 'branchdialog'},  # gitk
+        {'wname': 'pinentry'},  # GPG key password entry
+        {'wmclass': 'ssh-askpass'},  # ssh-askpass
+
+    ],
+    **layout_defaults,
 )
 auto_fullscreen = True
 focus_on_window_activation = "focus"
@@ -487,8 +497,8 @@ focus_on_window_activation = "focus"
 
 app_rules = {
     "Chromium": "1",
+    "firefox": "1",
     "Sublime_text": "2",
-    "Subl3": "2",
     "discord": "4"
 }
 
@@ -498,38 +508,27 @@ def grouper(window, windows=app_rules):
 
     windowtype = window.window.get_wm_class()[1]
 
+    # if the window is in our map
     if windowtype in windows.keys():
 
-        if windowtype != "urxvt":
-            window.togroup(windows[windowtype])
-            window.group.cmd_toscreen(toggle=False)
-        else:
-            try:
-
-                window.togroup(windows[windowtype][0])
-                window.group.cmd_toscreen(toggle=False)
-            except IndexError:
-                pass
+        window.togroup(windows[windowtype])
+        window.group.cmd_toscreen(toggle=False)
 
 
-@hook.subscribe.client_urgent_hint_changed
-def go(client):
-    logger.debug("rajt urgent config")
-    client.group.cmd_toscreen()
+# @hook.subscribe.client_urgent_hint_changed
+# def go(client):
+#     logger.debug("rajt urgent config")
+#     client.group.cmd_toscreen()
 
 
-app_float_center = (
-    "URxvt", "feh"
-)
+# app_float_center = ()
 
 
-@hook.subscribe.client_new
-def go_float(window, windows=app_float_center):
-    windowtype = window.window.get_wm_class()[1]
-    logger.debug("urxvt_cliebt")
-    # if the window is in our map
-    if windowtype in windows:
-        window.floating = True
+# @hook.subscribe.client_new
+# def go_float(window, windows=app_float_center):
+    # windowtype = window.window.get_wm_class()[1]
+    # if windowtype in windows:
+        # window.floating = True
 
 
 wmname = "LG3D"

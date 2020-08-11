@@ -5,9 +5,6 @@
 import requests
 import subprocess
 from libqtile.widget import base
-# from libqtile.widget import groupbox
-
-# __all__ = ['WttrWeather']
 
 
 class WttrWeather(base.ThreadedPollText):
@@ -19,7 +16,7 @@ class WttrWeather(base.ThreadedPollText):
         ('units', '&m', '&u USCS &m metric and &M  speed in m/s'),
         ('format', "{c} {C}", '1-4 change variable'),
         ('execute', None, 'Command to execute on click'),
-        ("update_interval", 600.0, "Update interval for the Memory"),
+        ("update_interval", 3600.0, "Update interval for the Memory"),
     ]
 
     def __init__(self, **config):

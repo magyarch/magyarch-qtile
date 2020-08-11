@@ -6,30 +6,13 @@
 
 if [ $DESKTOP_SESSION == "bspwm" ] 
 then
-	declare options=("alias
-bash
-bspwm
-profile
-vifm
-xinitrc
-polybar
-st
-sxhkd
-vim
-xprofile
-quit")
+	declare options=("alias\nbash\nbspwm\nprofile\n\
+vifm\nxinitrc\npolybar\nst\nsxhkd\nvim\nxprofile\nquit")
 
 elif [ $DESKTOP_SESSION == "qtile" ] 
 then
-	declare options=("alias
-bash
-qtile
-profile
-vifm
-xinitrc
-vim
-xprofile
-quit")
+	declare options=("alias\nbash\nqtile\nprofile\n\
+start_run\nvifm\nvim\nxprofile\nquit")
 fi
 
 choice=$(echo -e "${options[@]}" | rofi -dmenu -i -no-custom -p 'Edit a config file: ')
@@ -37,6 +20,9 @@ choice=$(echo -e "${options[@]}" | rofi -dmenu -i -no-custom -p 'Edit a config f
 case "$choice" in
 	quit)
 		echo "Program terminated." && exit 1
+	;;
+	start_run)
+		choice="$HOME/.local/bin/start_run"
 	;;
 	alias)
 		choice="$HOME/.config/aliasrc"
