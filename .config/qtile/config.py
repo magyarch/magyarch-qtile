@@ -498,7 +498,9 @@ focus_on_window_activation = "focus"
 app_rules = {
     "Chromium": "1",
     "firefox": "1",
+    "Brave-browser": "1",
     "Sublime_text": "2",
+    "Subl3": "2",
     "discord": "4"
 }
 
