@@ -13,6 +13,9 @@ import clock
 import my_sensors
 from collections import namedtuple
 from typing import List  # noqa: F401
+# from libqtile.log_utils import logger
+from Xlib.display import Display
+
 
 mod = "mod4"
 
@@ -140,8 +143,9 @@ keys = [
 
     # Mod4 (Super) + shift +
 
-    Key([mod, "shift"], "c", lazy.spawn(termfloat + "-e calcurse")),
-    Key([mod, "shift"], "d", lazy.spawn("rofi -show run")),
+    # Key([mod, "shift"], "c", lazy.spawn(termfloat + "-e calcurse")),
+    Key([mod, "shift"], "c", lazy.spawn("urxvt --geometry 70x20 -e calcurse")),
+    Key([mod, "shift"], "d", lazy.spawn("rofi -show run"),),
     Key([mod, "shift"], "e", lazy.spawn("subl3"),
         lazy.spawn("subl")
         ),
@@ -276,6 +280,14 @@ def open_power(qtile):
     qtile.cmd_spawn("power")
 
 
+def open_calcurse(qtile):
+    qtile.cmd_spawn("urxvt --geometry 70x20 -e calcurse")
+
+
+def kill_calcurse(qtile):
+    qtile.cmd_spawn("calcursekill")
+
+
 screens = [
     Screen(
         top=bar.Bar(
@@ -349,7 +361,7 @@ screens = [
                     # P    pressure (hPa),
                     format="{c}{t:>6}",
                     units='&m',
-                    update_interval=10,
+                    update_interval=3600,
                 ),
                 widget.Sep(
                     **sep_set
@@ -424,6 +436,10 @@ screens = [
                 clock.Clock(
                     format="⏳ %H:%M",
                     format_alt="📆 %Y-%m-%d %H:%M",
+                    mouse_callbacks={
+                        'Button4': kill_calcurse,
+                        'Button5': open_calcurse
+                    },
                 ),
                 widget.Sep(
                     **sep_set
@@ -481,9 +497,9 @@ floating_layout = layout.Floating(
         {'wmclass': 'toolbar'},
         {'wmclass': 'confirmreset'},  # gitk
         {'wmclass': 'makebranch'},  # gitk
+        {'wmclass': 'URxvt'},  # gitk
         {'wmclass': 'maketag'},  # gitk
         {'wmclass': 'feh'},  # gitk
-        {'wmclass': "URxvt"},  # gitk
         {'wname': 'branchdialog'},  # gitk
         {'wname': 'pinentry'},  # GPG key password entry
         {'wmclass': 'ssh-askpass'},  # ssh-askpass
@@ -523,14 +539,21 @@ def grouper(window, windows=app_rules):
 #     client.group.cmd_toscreen()
 
 
-# app_float_center = ()
+app_float_center = ("calcurse")
 
 
-# @hook.subscribe.client_new
-# def go_float(window, windows=app_float_center):
-    # windowtype = window.window.get_wm_class()[1]
-    # if windowtype in windows:
-        # window.floating = True
+@hook.subscribe.client_new
+def go_float(window, windows=app_float_center):
+    win_cal = window.window.get_name()
+
+    if win_cal in windows:
+        window.floating = True
+        # window.cmd_set_size_floating(500, 500)
+        my_screen_w = Display(":0").screen().width_in_pixels
+        window.float_x = 0
+        window.float_y = 0
+        win_w = window.cmd_get_size()[0]
+        window.tweak_float(x=my_screen_w - win_w - 30, y=40)
 
 
 wmname = "LG3D"
