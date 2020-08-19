@@ -344,7 +344,7 @@ screens = [
                 ),
 
                 wttrweather.WttrWeather(
-                    location="Fabianhaza",
+                    location="Budapest",
 
                     # Format
                     # c    Weather condition,
