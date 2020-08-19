@@ -1,4 +1,4 @@
-# Copyright (c) 2020 MagyArch Linuy
+# Copyright (c) 2020 MagyArch Linux <https://magyarchlinux.org>
 
 
 from libqtile.config import Key, Screen, Group, Drag, Click
@@ -88,9 +88,9 @@ keys = [
     Key([mod], "r", lazy.spawncmd()),
     Key([mod], "w", lazy.spawn(browser)),
     Key([mod], "F2", lazy.spawn("edconf.sh")),
-    Key([mod], "F6", lazy.spawn(termfloat + " -e cava")),
-    Key([mod], "F7", lazy.spawn("maim_save")),
-    Key([mod], "F8", lazy.spawn("maimpick")),
+    # Key([mod], "F6", lazy.spawn(termfloat + " -e cava")),
+    Key([mod], "F4", lazy.spawn("maim_save")),
+    Key([mod], "F5", lazy.spawn("maimpick")),
     Key([mod], "F9", lazy.spawn("dmenumount")),
     Key([mod], "F10", lazy.spawn("dmenuumount")),
     Key([mod], "Return", lazy.spawn(term)),
@@ -177,7 +177,7 @@ group_names = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
 
 group_layouts = ("bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "floating", "bsp")
 
-group_labels = ("", "", "", "", "", "", "", "", "", "")
+# group_labels = ("", "", "", "", "", "", "", "", "", "")
 
 
 for i in range(len(group_names)):
@@ -296,7 +296,6 @@ screens = [
                     rounded=False,
                     center_aligned=True,
                     highlight_method="block",
-                    # this_current_screen_border="#555555",
                     this_current_screen_border=color.color0,
                     this_screen_border=color.color0,
                     urgent_alert_method="block",
@@ -307,7 +306,6 @@ screens = [
                     margin_x=2,
                     margin_y=3,
                     disable_drag=True,
-                    # inactive="#555555",
                     inactive=color.color1,
                     active=color.foreground,
                     # hide_unused=True
@@ -539,11 +537,11 @@ def grouper(window, windows=app_rules):
 #     client.group.cmd_toscreen()
 
 
-app_float_center = ("calcurse")
+app_float_pos = ("calcurse")
 
 
 @hook.subscribe.client_new
-def go_float(window, windows=app_float_center):
+def go_float(window, windows=app_float_pos):
     win_cal = window.window.get_name()
 
     if win_cal in windows:
