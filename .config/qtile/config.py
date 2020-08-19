@@ -272,6 +272,10 @@ def open_update(qtile):
     qtile.cmd_spawn(term + ' -e updatepackage')
 
 
+def open_update_notify(qtile):
+    qtile.cmd_spawn("notify-qtile-update")
+
+
 def open_ncmpcpp(qtile):
     qtile.cmd_spawn(term + " -e ncmpcpp")
 
@@ -344,7 +348,7 @@ screens = [
                 ),
 
                 wttrweather.WttrWeather(
-                    location="Budapest",
+                    location="Fabianhaza",
 
                     # Format
                     # c    Weather condition,
@@ -375,13 +379,19 @@ screens = [
 
                 widget.TextBox(
                     text="📦",
-                    mouse_callbacks={'Button1': open_update},
+                    mouse_callbacks={
+                        'Button1': open_update,
+                        'Button3': open_update_notify
+                    },
                 ),
 
                 widget.CheckUpdates(
                     distro="Arch_yay",
                     display_format="{updates:>2}",
-                    mouse_callbacks={'Button1': open_update},
+                    mouse_callbacks={
+                        'Button1': open_update,
+                        'Button3': open_update_notify
+                    },
                     update_interval=600,
                 ),
 

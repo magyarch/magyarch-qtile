@@ -1,0 +1,11 @@
+#!/bin/sh
+
+printf "Beginning upgrade.\\n"
+
+yay -Syyu
+# pkill -RTMIN+8 i3blocks
+
+polybar-msg cmd restart
+
+printf "\\nUpgrade complete.\\nPress <Enter> to exit window.\\n\\n"
+read -r
