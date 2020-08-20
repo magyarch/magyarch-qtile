@@ -36,9 +36,12 @@ class WttrWeather(base.ThreadedPollText):
         if data.ok is False:
             output = "N/A"
         else:
-            for x, y in zip(data_keys, data.text.split("\\")):
-                val[x] = y
-            output = self.format.format(**val)
+            try:
+                for x, y in zip(data_keys, data.text.split("\\")):
+                    val[x] = y
+                output = self.format.format(**val)
+            except KeyError:
+                output = "N/A"
         return output
 
     def button_press(self, x, y, button):
