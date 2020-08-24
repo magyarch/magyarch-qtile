@@ -146,9 +146,7 @@ keys = [
     # Key([mod, "shift"], "c", lazy.spawn(termfloat + "-e calcurse")),
     Key([mod, "shift"], "c", lazy.spawn("urxvt --geometry 70x20 -e calcurse")),
     Key([mod, "shift"], "d", lazy.spawn("rofi -show run"),),
-    Key([mod, "shift"], "e", lazy.spawn("subl3"),
-        lazy.spawn("subl")
-        ),
+    Key([mod, "shift"], "e", lazy.spawn("subl"),),
     Key([mod, "shift"], "i", lazy.spawn(term + " -e gtop")),
     Key([mod, "shift"], "n", lazy.spawn(termfloat + " -e ncmpcpp")),
     Key([mod, "shift"], "p", lazy.spawn("pcmanfm")),
@@ -312,7 +310,7 @@ screens = [
                     disable_drag=True,
                     inactive=color.color1,
                     active=color.foreground,
-                    # hide_unused=True
+                    hide_unused=True
                     # if set group label sets, small icons.
                     # fontsize=20,
                 ),
@@ -348,7 +346,7 @@ screens = [
                 ),
 
                 wttrweather.WttrWeather(
-                    location="Fabianhaza",
+                    location="Budapest",
 
                     # Format
                     # c    Weather condition,
@@ -363,7 +361,7 @@ screens = [
                     # P    pressure (hPa),
                     format="{c}{t:>6}",
                     units='&m',
-                    update_interval=3600,
+                    # update_interval=3600,
                 ),
                 widget.Sep(
                     **sep_set
@@ -535,10 +533,11 @@ def grouper(window, windows=app_rules):
     windowtype = window.window.get_wm_class()[1]
 
     # if the window is in our map
-    if windowtype in windows.keys():
+    for app in windows.keys():
+        if windowtype in app:
 
-        window.togroup(windows[windowtype])
-        window.group.cmd_toscreen(toggle=False)
+            window.togroup(windows[windowtype])
+            window.group.cmd_toscreen(toggle=False)
 
 
 # @hook.subscribe.client_urgent_hint_changed
@@ -547,21 +546,30 @@ def grouper(window, windows=app_rules):
 #     client.group.cmd_toscreen()
 
 
-app_float_pos = ("calcurse")
+app_float_pos = ("calcurse",)
 
 
 @hook.subscribe.client_new
 def go_float(window, windows=app_float_pos):
     win_cal = window.window.get_name()
 
-    if win_cal in windows:
+    for app1 in app_float_pos:
+        if win_cal in app1:
+            window.floating = True
+            # window.cmd_set_size_floating(500, 500)
+            my_screen_w = Display(":0").screen().width_in_pixels
+            window.float_x = 0
+            window.float_y = 0
+            win_w = window.cmd_get_size()[0]
+            window.tweak_float(x=my_screen_w - win_w - 30, y=40)
+
+
+@hook.subscribe.client_new
+def floating_dialogs(window):
+    dialog = window.window.get_wm_type() == 'dialog'
+    transient = window.window.get_wm_transient_for()
+    if dialog or transient:
         window.floating = True
-        # window.cmd_set_size_floating(500, 500)
-        my_screen_w = Display(":0").screen().width_in_pixels
-        window.float_x = 0
-        window.float_y = 0
-        win_w = window.cmd_get_size()[0]
-        window.tweak_float(x=my_screen_w - win_w - 30, y=40)
 
 
 wmname = "LG3D"

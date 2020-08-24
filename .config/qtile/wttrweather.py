@@ -5,6 +5,8 @@
 import requests
 import subprocess
 from libqtile.widget import base
+# from libqtile.log_utils import logger
+import socket
 
 
 class WttrWeather(base.ThreadedPollText):
@@ -28,20 +30,34 @@ class WttrWeather(base.ThreadedPollText):
         return self.update_interval
 
     def poll(self):
-        val = {}
-        data_keys = ['c', 'C', 'h', 't', 'f', 'w', 'l', 'm', 'p', 'P']
-        url = 'https://v2.wttr.in/' + self.location + '?format=%c\\%C\\%h\\%t\\%f\\%w\\%l\\%m\\%p\\%P' + self.units
-        data = requests.get(url, headers={'user-agent': 'curl'})
+        try:
+            host = socket.gethostbyname("8.8.8.8")
+            s = socket.create_connection((host, 443))
+            s.close()
+            connect = True
+        except:
+            connect = False
 
-        if data.ok is False:
-            output = "N/A"
-        else:
-            try:
-                for x, y in zip(data_keys, data.text.split("\\")):
-                    val[x] = y
-                output = self.format.format(**val)
-            except KeyError:
+        if connect:
+            val = {}
+            data_keys = ['c', 'C', 'h', 't', 'f', 'w', 'l', 'm', 'p', 'P']
+            url = 'https://v2.wttr.in/' + self.location + '?format=%c\\%C\\%h\\%t\\%f\\%w\\%l\\%m\\%p\\%P' + self.units
+            data = requests.get(url, headers={'user-agent': 'curl'})
+            if data.ok is False:
                 output = "N/A"
+                self.update_interval = 10
+            else:
+                try:
+                    for x, y in zip(data_keys, data.text.split("\\")):
+                        val[x] = y
+                    output = self.format.format(**val)
+                    self.update_interval = 3600
+                except KeyError:
+                    output = "N/A"
+                    self.update_interval = 10
+        else:
+            output = "N/A"
+            self.update_interval = 10
         return output
 
     def button_press(self, x, y, button):
