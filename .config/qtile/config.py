@@ -62,110 +62,115 @@ keys = [
 
     # No modifyers
 
-    # Key([], "Print", lazy.spawn("scrot '%Y-%m-%d-%H:%M:%S-pic_screen.jpg' -e 'mv $f $$(xdg-user-dir PICTURES)'")),
-    Key([], "F10", lazy.spawn("amixer set Master 5%-")),
-    Key([], "F11", lazy.spawn("amixer set Master 5%+")),
+    #   SCREENSHOTS
+    Key([], "Print", lazy.spawn("malscrot"), desc='Scennshot fullscreen'),
+    Key([mod], "Print", lazy.spawn("malscrot -u"), desc='Scennshot current window'),
+    Key([mod, "mod1"], "Print", lazy.spawn("malscrot -s"), desc='Scennshot selected'),
 
-    # Key image
+    #   XF(/ keys)
+    Key([], "XF86AudioLowerVolume", lazy.spawn("amixer -q set Master 5%-"), desc="Volume down 5%"),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn("amixer -q set Master 5%+"), desc="Volume up 5%"),
+    Key([], "XF86AudioMute", lazy.spawn("amixer -q set Master toggle"), desc="Volume mute"),
 
-    Key([], "F12", lazy.spawn(["feh", home + "/.config/qtile/no_modifier.png"])),
-    Key([mod], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4.png"])),
-    Key([mod, "control"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-control.png"])),
-    Key([mod, "mod1"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-mod1.png"])),
-    Key([mod, "shift"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-shift.png"])),
-    Key(["mod1"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod1.png"])),
+    #   KEYS IMAGES
+    Key([], "F12", lazy.spawn(["feh", home + "/.config/qtile/no_modifier.png"]), desc="Open no modifier image"),
+    Key([mod], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4.png"]), desc="Open mod4 modifier image"),
+    Key([mod, "control"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-control.png"]), desc="Open mod4-control modifier image"),
+    Key([mod, "mod1"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-mod1.png"]), desc="Open mod4-mod1 modifier image"),
+    Key([mod, "shift"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod4-shift.png"]), desc="Open mod4-shift modifier image"),
+    Key(["mod1"], "F12", lazy.spawn(["feh", home + "/.config/qtile/mod1.png"]), desc="Open mod1 modifier image"),
 
     # Mod4 (Super) +
 
-    Key([mod], "b", lazy.hide_show_bar(position='top')),
-    Key([mod], "c", lazy.spawn("power")),
-    Key([mod], "d", lazy.spawn("dmenu_run -i -p 'Search' -nb '#2f2b26' -sb '#2e8b57' -fn 'JetBrains Mono Medium-12'")),
-    Key([mod], "f", lazy.window.toggle_fullscreen()),
-    Key([mod], "i", lazy.spawn(term + " -e htop")),
-    Key([mod], "n", lazy.spawn(term + " -e newsboat")),
-    Key([mod], "p", lazy.spawn("discord")),
-    Key([mod], "q", lazy.window.kill()),
-    Key([mod], "r", lazy.spawncmd()),
-    Key([mod], "w", lazy.spawn(browser)),
-    Key([mod], "F2", lazy.spawn("edconf.sh")),
+    Key([mod], "b", lazy.hide_show_bar(position='top'), desc="Hide/show top bar"),
+    Key([mod], "c", lazy.spawn("power"), desc="Open logot script"),
+    Key([mod], "d", lazy.spawn("dmenu_run -i -p 'Search' -nb '#2f2b26' -sb '#2e8b57' -fn 'JetBrains Mono Medium-12'"), desc="Open dmenu"),
+    Key([mod], "f", lazy.window.toggle_fullscreen(), desc="Fullscreen on/off"),
+    Key([mod], "i", lazy.spawn(term + " -e htop"), desc="Open htop"),
+    Key([mod], "n", lazy.spawn(term + " -e newsboat"), desc="Open newsboat"),
+    Key([mod], "p", lazy.spawn("discord"), desc="Open discord"),
+    Key([mod], "q", lazy.window.kill(), desc="Close window"),
+    Key([mod], "r", lazy.spawncmd(), desc="open prompt (if enable prompt widget)"),
+    Key([mod], "w", lazy.spawn(browser), desc="Open default browser"),
+    Key([mod], "F2", lazy.spawn("edconf.sh"), desc="Fast config file open"),
     # Key([mod], "F6", lazy.spawn(termfloat + " -e cava")),
-    Key([mod], "F4", lazy.spawn("maim_save")),
-    Key([mod], "F5", lazy.spawn("maimpick")),
-    Key([mod], "F9", lazy.spawn("dmenumount")),
-    Key([mod], "F10", lazy.spawn("dmenuumount")),
-    Key([mod], "Return", lazy.spawn(term)),
-    Key([mod], "space", lazy.prev_layout()),
-    Key([mod], "Scroll_Lock", lazy.spawn("run_screenkey")),
-    Key([mod], "KP_Home", lazy.spawn("dmenurecord")),
-    Key([mod], "KP_End", lazy.spawn("live.sh")),
+    # Key([mod], "F4", lazy.spawn("maim_save")),
+    # Key([mod], "F5", lazy.spawn("maimpick")),
+    Key([mod], "F9", lazy.spawn("dmenumount"), desc="Fast phone mount"),
+    Key([mod], "F10", lazy.spawn("dmenuumount"), desc="Fast phone umount"),
+    Key([mod], "Return", lazy.spawn(term), desc="Open default terminal"),
+    Key([mod], "space", lazy.prev_layout(), desc="Prev layout"),
+    Key([mod], "Scroll_Lock", lazy.spawn("run_screenkey"), desc="Screenkey on/off"),
+    Key([mod], "KP_Home", lazy.spawn("dmenurecord"), desc="Open demenu record"),
+    Key([mod], "KP_End", lazy.spawn("live.sh"), desc="Open live.sh"),
 
     # opacity
-    Key([mod], "comma", lazy.window.down_opacity()),
-    Key([mod, "shift"], "comma", lazy.window.up_opacity()),
+    Key([mod], "comma", lazy.window.down_opacity(), desc="Down opacity"),
+    Key([mod, "shift"], "comma", lazy.window.up_opacity(), desc="Up opacity"),
 
 
 
     # ######### LAYOUT ################
 
-    Key([mod], "j", lazy.layout.down()),
-    Key([mod], "k", lazy.layout.up()),
-    Key([mod], "h", lazy.layout.left()),
-    Key([mod], "l", lazy.layout.right()),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left()),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right()),
-    Key([mod, "mod1"], "j", lazy.layout.flip_down()),
-    Key([mod, "mod1"], "k", lazy.layout.flip_up()),
-    Key([mod, "mod1"], "h", lazy.layout.flip_left()),
-    Key([mod, "mod1"], "l", lazy.layout.flip_right()),
-    Key([mod, "control"], "j", lazy.layout.grow_down()),
-    Key([mod, "control"], "k", lazy.layout.grow_up()),
-    Key([mod, "control"], "h", lazy.layout.grow_left()),
-    Key([mod, "control"], "l", lazy.layout.grow_right()),
+    Key([mod], "j", lazy.layout.down(), desc="Layout down"),
+    Key([mod], "k", lazy.layout.up(), desc="Layout up"),
+    Key([mod], "h", lazy.layout.left(), desc="Layout left"),
+    Key([mod], "l", lazy.layout.right(), desc="Layout right"),
+    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Layout shuffle down"),
+    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Layout shuffle up"),
+    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Layout shuffle left"),
+    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Layout shufle right"),
+    Key([mod, "mod1"], "j", lazy.layout.flip_down(), desc="Layout flip down"),
+    Key([mod, "mod1"], "k", lazy.layout.flip_up(), desc="Layout flip up"),
+    Key([mod, "mod1"], "h", lazy.layout.flip_left(), desc="Layout flip left"),
+    Key([mod, "mod1"], "l", lazy.layout.flip_right(), desc="Layout flip right"),
+    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Layout grow down"),
+    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Layout grow up"),
+    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Layout grow left"),
+    Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Layout grow right"),
 
-    Key([mod], "Down", lazy.layout.down()),
-    Key([mod], "Up", lazy.layout.up()),
-    Key([mod], "Left", lazy.layout.left()),
-    Key([mod], "Right", lazy.layout.right()),
-    Key([mod, "shift"], "Down", lazy.layout.shuffle_down()),
-    Key([mod, "shift"], "Up", lazy.layout.shuffle_up()),
-    Key([mod, "shift"], "Left", lazy.layout.shuffle_left()),
-    Key([mod, "shift"], "Right", lazy.layout.shuffle_right()),
-    Key([mod, "mod1"], "Down", lazy.layout.flip_down()),
-    Key([mod, "mod1"], "Up", lazy.layout.flip_up()),
-    Key([mod, "mod1"], "Left", lazy.layout.flip_left()),
-    Key([mod, "mod1"], "Right", lazy.layout.flip_right()),
-    Key([mod, "control"], "Down", lazy.layout.grow_down()),
-    Key([mod, "control"], "Up", lazy.layout.grow_up()),
-    Key([mod, "control"], "Left", lazy.layout.grow_left()),
-    Key([mod, "control"], "Right", lazy.layout.grow_right()),
+    Key([mod], "Down", lazy.layout.down(), desc="Layout down"),
+    Key([mod], "Up", lazy.layout.up(), desc="Layout up"),
+    Key([mod], "Left", lazy.layout.left(), desc="Layout left"),
+    Key([mod], "Right", lazy.layout.right(), desc="Layout right"),
+    Key([mod, "shift"], "Down", lazy.layout.shuffle_down(), desc="Layout shuffle down"),
+    Key([mod, "shift"], "Up", lazy.layout.shuffle_up(), desc="Layout shuffle up"),
+    Key([mod, "shift"], "Left", lazy.layout.shuffle_left(), desc="Layout shuffle left"),
+    Key([mod, "shift"], "Right", lazy.layout.shuffle_right(), desc="Layout shuffle right"),
+    Key([mod, "mod1"], "Down", lazy.layout.flip_down(), desc="Layout flip down"),
+    Key([mod, "mod1"], "Up", lazy.layout.flip_up(), desc="Layout flip up"),
+    Key([mod, "mod1"], "Left", lazy.layout.flip_left(), desc="Layout flip left"),
+    Key([mod, "mod1"], "Right", lazy.layout.flip_right(), desc="Layout flip right"),
+    Key([mod, "control"], "Down", lazy.layout.grow_down(), desc="Layout grow down"),
+    Key([mod, "control"], "Up", lazy.layout.grow_up(), desc="Layout grow up"),
+    Key([mod, "control"], "Left", lazy.layout.grow_left(), desc="Layout grow left"),
+    Key([mod, "control"], "Right", lazy.layout.grow_right(), desc="Layout grow right"),
 
     # Mod4 (Super) + shift +
 
-    # Key([mod, "shift"], "c", lazy.spawn(termfloat + "-e calcurse")),
-    Key([mod, "shift"], "c", lazy.spawn("urxvt --geometry 70x20 -e calcurse")),
-    Key([mod, "shift"], "d", lazy.spawn("rofi -show run"),),
-    Key([mod, "shift"], "e", lazy.spawn("subl"),),
-    Key([mod, "shift"], "i", lazy.spawn(term + " -e gtop")),
-    Key([mod, "shift"], "n", lazy.spawn(termfloat + " -e ncmpcpp")),
-    Key([mod, "shift"], "p", lazy.spawn("pcmanfm")),
-    Key([mod, "shift"], "r", lazy.restart()),
-    Key([mod, "shift"], "x", lazy.spawm("killall ffmpeg")),
-    Key([mod, "shift"], "w", lazy.spawn("firefox")),
-    Key([mod, "shift"], "Return", lazy.spawn(termfloat)),
+    Key([mod, "shift"], "c", lazy.spawn("urxvt --geometry 70x20 -e calcurse"), desc="Open calcurse"),
+    Key([mod, "shift"], "d", lazy.spawn("rofi -show run"), desc="Open rofi run"),
+    Key([mod, "shift"], "e", lazy.spawn("subl3"), desc="Open sublime-text"),
+    Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Window floating on/off"),
+    Key([mod, "shift"], "i", lazy.spawn(term + " -e gtop"), desc="Open gtop"),
+    Key([mod, "shift"], "n", lazy.spawn(termfloat + " -e ncmpcpp"), desc="Open ncmpcpp"),
+    Key([mod, "shift"], "p", lazy.spawn("pcmanfm"), desc="Open pcmanfm"),
+    Key([mod, "shift"], "r", lazy.restart(), desc="Qtile reload"),
+    Key([mod, "shift"], "x", lazy.spawm("killall ffmpeg"), desc="Kill ffmpeg"),
+    Key([mod, "shift"], "w", lazy.spawn("firefox"), desc="Open firefox"),
+    Key([mod, "shift"], "Return", lazy.spawn(termfloat), desc="Open floating terminal"),
 
     # Mod4 (Super) + mod1 (Alt) +
 
-    Key(["mod1"], "a", lazy.spawn("pavucontrol")),
-    Key([mod, "mod1"], "q", lazy.shutdown()),
-    Key([mod, "mod1"], "r", lazy.restart()),
-    Key([mod, "mod1"], "space", lazy.prev_layout()),
-    Key([mod, "mod1"], "Tab", lazy.screen.prev_group()),
+    Key(["mod1"], "a", lazy.spawn("pavucontrol"), desc="Open pavucontrol"),
+    Key([mod, "mod1"], "q", lazy.shutdown(), desc="Logout qtile"),
+    Key([mod, "mod1"], "r", lazy.restart(), desc="Qtile reload"),
+    Key([mod, "mod1"], "space", lazy.next_layout(), desc="Next layout"),
+    Key([mod, "mod1"], "Tab", lazy.screen.prev_group(), desc="Sreen prev group"),
 
     # mod1 (Alt) +
 
-    Key(["mod1"], "Tab", lazy.screen.next_group()),
+    Key(["mod1"], "Tab", lazy.screen.next_group(), desc="Sreen next group"),
 
 ]
 
@@ -175,7 +180,7 @@ group_names = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
 
 group_layouts = ("bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "bsp", "floating", "bsp")
 
-# group_labels = ("", "", "", "", "", "", "", "", "", "")
+group_labels = ("", "", "", "", "", "", "", "", "", "")
 
 
 for i in range(len(group_names)):
@@ -183,7 +188,7 @@ for i in range(len(group_names)):
         Group(
             name=group_names[i],
             layout=group_layouts[i].lower(),
-            # label=group_labels[i],
+            label=group_labels[i],
         ))
 
 
@@ -191,20 +196,20 @@ for i in groups:
     if i.name == "10":
         keys.extend([
             # mod1 + letter of group = switch to group
-            Key([mod], "0", lazy.group["10"].toscreen(toggle=False)),
+            Key([mod], "0", lazy.group["10"].toscreen(toggle=False), desc="Jump to group 10"),
 
             # mod1 + shift + letter of group = switch to & move focused window to group
-            Key([mod, "shift"], "0", lazy.window.togroup("10")),
-            Key([mod, "control"], "0", lazy.window.togroup("10", switch_group=True)),
+            Key([mod, "shift"], "0", lazy.window.togroup("10"), desc="Move window to group 10, not following"),
+            Key([mod, "control"], "0", lazy.window.togroup("10", switch_group=True), desc="Move window to group 10, follow"),
         ])
     else:
         keys.extend([
             # mod1 + letter of group = switch to group
-            Key([mod], i.name, lazy.group[i.name].toscreen(toggle=False)),
+            Key([mod], i.name, lazy.group[i.name].toscreen(toggle=False), desc="Jump to group " + i.name),
 
             # mod1 + shift + letter of group = switch to & move focused window to group
-            Key([mod, "shift"], i.name, lazy.window.togroup(i.name)),
-            Key([mod, "control"], i.name, lazy.window.togroup(i.name, switch_group=True)),
+            Key([mod, "shift"], i.name, lazy.window.togroup(i.name), desc="Move window to group " + i.name + ", not following"),
+            Key([mod, "control"], i.name, lazy.window.togroup(i.name, switch_group=True), desc="Move window to group " + i.name + ", follow"),
         ])
 
 
@@ -233,9 +238,9 @@ layouts = [
     # layout.MonadTall(),
     # layout.MonadWide(),
     # layout.RatioTile(),
-    layout.Tile(
-        **layout_defaults,
-    ),
+    # layout.Tile(
+    #     **layout_defaults,
+    # ),
 
     # layout.TreeTab(),
     # layout.VerticalTile(),
@@ -250,7 +255,7 @@ layouts = [
 widget_defaults = dict(
     # font='Hack Nerd Font Mono',
     font='JetBrains Mono',
-    fontsize=10,
+    fontsize=12,
     padding=3,
     background=color.background,
     foreground=color.foreground,
@@ -261,8 +266,10 @@ widget_defaults = dict(
 extension_defaults = widget_defaults.copy()
 
 sep_set = dict(
-    linewidth=1,
-    foreground=color.color10,
+    linewidth=3,
+    foreground=color.color0,
+    # foreground="#000000",
+    size_percent=100,
 )
 
 
@@ -310,9 +317,9 @@ screens = [
                     disable_drag=True,
                     inactive=color.color1,
                     active=color.foreground,
-                    hide_unused=True
+                    hide_unused=True,
                     # if set group label sets, small icons.
-                    # fontsize=20,
+                    fontsize=20,
                 ),
 
                 widget.CurrentLayoutIcon(
@@ -477,10 +484,10 @@ screens = [
 # Drag floating layouts.
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(),
-         start=lazy.window.get_position()),
+         start=lazy.window.get_position(), desc="Move window"),
     Drag([mod], "Button3", lazy.window.set_size_floating(),
-         start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front())
+         start=lazy.window.get_size(), desc="Resize window"),
+    Click([mod], "Button2", lazy.window.bring_to_front(), desc="Bring to front")
 ]
 
 dgroups_key_binder = None

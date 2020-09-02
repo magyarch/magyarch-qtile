@@ -19,12 +19,12 @@ for i in data.keys():
         print(f'\t{x.label}: {x.current:.1f}{unit} ')
         val[x.label] = f'{x.current:.1f}{unit}'
 
-print(val)
-if not tag:
-    for k in val.keys():
-        tag = k
-        print(k)
-        print(tag)
-        break
+# print(val)
+# if not tag:
+#     for k in val.keys():
+#         tag = k
+#         print(k)
+#         print(tag)
+#         break
 # print(''.join(str(key) + ": " + str(value) for key, value in val.items(tag)))
-print(tag + ": " + "tag".format(**val))
+# print(tag + ": " + "tag".format(**val))
