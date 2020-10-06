@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# script to take screenshot in selected area
+#
+###
+
+sleep 0.2
+
+filename=$(date +"%Y-%m-%d_%H:%M:%S")".png"
+screenshots=$(xdg-user-dir PICTURES)"/screenshots"
+dest="$screenshots/$filename"
+
+# create destination directory if it does not exist
+mkdir -p $screenshots
+
+# create screenshot
+case $1 in
+    -s)
+        notify-send "Select screenshot area" -t 1000
+        scrot -s $filename
+        ;;
+    -u)
+        notify-send "Taking screenshot for current window" -t 1000
+        sleep 1.1
+        scrot -u $filename
+        ;;
+    *)
+        # sleep 3
+        scrot $filename
+        ;;
+esac
+
+# move to shared folder
+if [ -f "$filename" ]; then
+    mv "$filename" "$dest"
+fi
+
+
+notify-send "Screenshot save $filename here $screenshots." -t 5000
