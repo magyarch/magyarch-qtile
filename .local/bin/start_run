@@ -9,7 +9,8 @@ then
     picom --config ~/.config/picom.conf &       # xcompmgr for transparency
     dunst &                 # dunst for notifications
     /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-    feh --no-fehbg --bg-scale /usr/share/backgrounds/magyarch/wallpaper.png &
+    # feh --no-fehbg --bg-scale /usr/share/backgrounds/magyarch/wallpaper.png &
+    feh --no-fehbg --bg-scale $HOME/.config/qtile/qtile_wall.jpg &
     nm-applet & 
     mpd & 
 fi
