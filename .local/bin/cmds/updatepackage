@@ -2,7 +2,7 @@
 
 printf "Beginning upgrade.\\n"
 
-yay -Syyu
+paru -Syyu
 # pkill -RTMIN+8 i3blocks
 
 polybar-msg cmd restart
