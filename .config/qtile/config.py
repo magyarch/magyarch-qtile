@@ -391,7 +391,8 @@ screens = [
                 ),
 
                 widget.CheckUpdates(
-                    distro="Arch_yay",
+                    # distro="Arch_yay",
+                    custom_command="paru -Qua",
                     display_format="{updates:>2}",
                     mouse_callbacks={
                         'Button1': open_update,

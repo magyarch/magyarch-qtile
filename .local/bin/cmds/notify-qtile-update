@@ -1,2 +1,2 @@
 #! /bin/bash
-notify-send -i /usr/share/icons/Adwaita/32x32/status/software-update-urgent-symbolic.symbolic.png "$(paru -Qu |  awk -F" " '{print $1 " " $4}')"
+notify-send -i /usr/share/icons/Adwaita/32x32/status/software-update-urgent-symbolic.symbolic.png  "$(paru  -Qua |  awk -F" " '{print $1 " " $4}')"
