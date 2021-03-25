@@ -6,7 +6,7 @@ import psutil
 from libqtile.widget import base
 
 
-class SENSORS(base.ThreadedPollText):
+class SENSORS(base.InLoopPollText):
 
     orientations = base.ORIENTATION_HORIZONTAL
     defaults = [

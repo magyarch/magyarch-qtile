@@ -3,7 +3,7 @@ from libqtile.widget import base
 # from libqtile.widget import groupbox
 
 
-class Cpu(base.ThreadedPollText):
+class Cpu(base.InLoopPollText):
     """Display CPU usage"""
     defaults = [
         ('update_interval', 1, 'The update interval.'),
@@ -12,7 +12,7 @@ class Cpu(base.ThreadedPollText):
     ]
 
     def __init__(self, **config):
-        base.ThreadedPollText.__init__(self, **config)
+        base.InLoopPollText.__init__(self, **config)
         self.add_defaults(Cpu.defaults)
         self.stats = self.get_stats()
 
@@ -31,7 +31,7 @@ class Cpu(base.ThreadedPollText):
         return f'{use}%'.ljust(4)
 
 
-class Hdd(base.ThreadedPollText):
+class Hdd(base.InLoopPollText):
     """Display HDD I/O"""
     defaults = [
         ('bytes_per_sector', 512, 'Sector size in bytes.'),
@@ -39,7 +39,7 @@ class Hdd(base.ThreadedPollText):
     ]
 
     def __init__(self, **config):
-        base.ThreadedPollText.__init__(self, **config)
+        base.InLoopPollText.__init__(self, **config)
         self.add_defaults(Hdd.defaults)
         self.stats = self.get_stats()
 
@@ -70,7 +70,7 @@ class Hdd(base.ThreadedPollText):
         return f'R:{r:-.3g}{ru}/s'.ljust(11) + f'W:{w:-.3g}{wu}/s'.ljust(10)
 
 
-class Memory(base.ThreadedPollText):
+class Memory(base.InLoopPollText):
     """Display memory usage"""
     defaults = [
         ('update_interval', 1, 'The update interval.'),
@@ -79,7 +79,7 @@ class Memory(base.ThreadedPollText):
     ]
 
     def __init__(self, **config):
-        base.ThreadedPollText.__init__(self, **config)
+        base.InLoopPollText.__init__(self, **config)
         self.add_defaults(Memory.defaults)
 
     def get_stats(self):
@@ -102,7 +102,7 @@ class Memory(base.ThreadedPollText):
         return use
 
 
-class Net(base.ThreadedPollText):
+class Net(base.InLoopPollText):
     """Displays interface down and up speed"""
     defaults = [
         ('interface', 'wlan0', 'The interface to monitor'),
@@ -110,7 +110,7 @@ class Net(base.ThreadedPollText):
     ]
 
     def __init__(self, **config):
-        base.ThreadedPollText.__init__(self, **config)
+        base.InLoopPollText.__init__(self, **config)
         self.add_defaults(Net.defaults)
         self.stats = self.get_stats()
 
@@ -139,7 +139,7 @@ class Net(base.ThreadedPollText):
         return f'D:{d:-.3g}{du}/s'.ljust(21) + "\n" + f'U:{u:-.3g}{uu}/s'.ljust(11)
 
 
-class Host(base.ThreadedPollText):
+class Host(base.InLoopPollText):
     """Check host status."""
     defaults = [
         ('address', 'localhost', 'Host address to check.'),
@@ -151,7 +151,7 @@ class Host(base.ThreadedPollText):
     ]
 
     def __init__(self, **config):
-        base.ThreadedPollText.__init__(self, **config)
+        base.InLoopPollText.__init__(self, **config)
         self.add_defaults(Host.defaults)
 
     def poll(self):

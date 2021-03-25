@@ -50,7 +50,7 @@ from libqtile.widget import base
 from libqtile.log_utils import logger
 
 
-class Mpd(base.ThreadPoolText):
+class Mpd(base.InLoopPollText):
     """A widget for the Music Player Daemon (MPD)"""
     orientations = base.ORIENTATION_HORIZONTAL
     defaults = [

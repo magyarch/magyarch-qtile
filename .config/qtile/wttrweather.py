@@ -9,7 +9,7 @@ from libqtile.widget import base
 import socket
 
 
-class WttrWeather(base.ThreadedPollText):
+class WttrWeather(base.InLoopPollText):
     """Display https://wttr.in weather."""
 
     orientations = base.ORIENTATION_HORIZONTAL
@@ -22,7 +22,7 @@ class WttrWeather(base.ThreadedPollText):
     ]
 
     def __init__(self, **config):
-        base.ThreadedPollText.__init__(self, **config)
+        base.InLoopPollText.__init__(self, **config)
         self.add_defaults(WttrWeather.defaults)
 
     def tick(self):
@@ -77,6 +77,6 @@ class WttrWeather(base.ThreadedPollText):
         return output
 
     def button_press(self, x, y, button):
-        base.ThreadedPollText.button_press(self, x, y, button)
+        base.InLoopPollText.button_press(self, x, y, button)
         if button == 1 and self.execute is not None:
             subprocess.Popen([self.execute], shell=True)
