@@ -1,4 +1,5 @@
 #! /bin/bash
 
-kill -9 $(ps aux | grep  " -e calcurse"  | gawk  '{print $2}')
+# kill -9 $(ps aux | grep  " -e calcurse"  | gawk  '{print $2}')
+pkill calcurse
 exit 1

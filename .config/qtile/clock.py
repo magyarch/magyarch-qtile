@@ -100,7 +100,7 @@ class Clock(base.InLoopPollText):
         return (now + self.DELTA).strftime(a)
 
     def button_press(self, x, y, button):
-        base.ThreadedPollText.button_press(self, x, y, button)
+        base.InLoopPollText.button_press(self, x, y, button)
         if button == 1:
             # subprocess.Popen([self.execute], shell=True)
             self.change()
