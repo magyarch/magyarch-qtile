@@ -15,6 +15,7 @@ from collections import namedtuple
 from typing import List  # noqa: F401
 # from libqtile.log_utils import logger
 from Xlib.display import Display
+from libqtile import qtile
 
 
 mod = "mod4"
@@ -273,27 +274,27 @@ sep_set = dict(
 )
 
 
-def open_update(qtile):
+def open_update():
     qtile.cmd_spawn(term + ' -e updatepackage')
 
 
-def open_update_notify(qtile):
+def open_update_notify():
     qtile.cmd_spawn("notify-qtile-update")
 
 
-def open_ncmpcpp(qtile):
+def open_ncmpcpp():
     qtile.cmd_spawn(term + " -e ncmpcpp")
 
 
-def open_power(qtile):
+def open_power():
     qtile.cmd_spawn("power")
 
 
-def open_calcurse(qtile):
+def open_calcurse():
     qtile.cmd_spawn("urxvt --geometry 70x20 -e calcurse")
 
 
-def kill_calcurse(qtile):
+def kill_calcurse():
     qtile.cmd_spawn("calcursekill")
 
 
