@@ -15,7 +15,7 @@ fi
 
 case $DIALOG_RESULT in
         "Quit bspwm" ) pkill bspwm ;;
-        "Quit qtile" ) qtile-cmd -o cmd -f shutdown ;;
+        "Quit qtile" ) qtile cmd-obj -o cmd -f shutdown ;;
         "Hibernate") systemctl hibernate ;;
         "Reboot") systemctl reboot ;;
         "Poweroff") systemctl poweroff ;;
