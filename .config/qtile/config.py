@@ -150,7 +150,7 @@ keys = [
     # Mod4 (Super) + shift +
 
     Key([mod, "shift"], "c", lazy.spawn("urxvt --geometry 70x20 -e calcurse"), desc="Open calcurse"),
-    Key([mod, "shift"], "d", lazy.spawn("rofi -show run"), desc="Open rofi run"),
+    Key([mod, "shift"], "d", lazy.spawn("rofi_run -r"), desc="Open rofi run"),
     Key([mod, "shift"], "e", lazy.spawn("subl3"), desc="Open sublime-text"),
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Window floating on/off"),
     Key([mod, "shift"], "i", lazy.spawn(term + " -e gtop"), desc="Open gtop"),
