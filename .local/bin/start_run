@@ -6,6 +6,7 @@ if [ $DESKTOP_SESSION == "qtile" ]
 then
 
     # setxkbmap -option caps:super -variant altgr-intl && killall xcape 2>/dev/null ; xcape -e 'Super_L=Escape' &
+    # Add args --experimental-backends if use blur.
     picom  --config ~/.config/picom.conf &       # xcompmgr for transparency
     dunst &                 # dunst for notifications
     /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
