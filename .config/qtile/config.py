@@ -1,7 +1,7 @@
 # Copyright (c) 2020 MagyArch Linux <https://magyarchlinux.org>
 
 
-from libqtile.config import Key, Screen, Group, Drag, Click
+from libqtile.config import Key, Match, Screen, Group, Drag, Click
 from libqtile.lazy import lazy
 from libqtile import layout, bar, widget, hook
 from os import getenv
@@ -13,7 +13,7 @@ import clock
 import my_sensors
 from collections import namedtuple
 from typing import List  # noqa: F401
-from libqtile.log_utils import logger
+# from libqtile.log_utils import logger
 from Xlib.display import Display
 from libqtile import qtile
 
@@ -152,7 +152,7 @@ keys = [
 
     Key([mod, "shift"], "c", lazy.spawn("urxvt --geometry 70x20 -e calcurse"), desc="Open calcurse"),
     Key([mod, "shift"], "d", lazy.spawn("rofi_run -r"), desc="Open rofi run"),
-    Key([mod, "shift"], "e", lazy.spawn("subl3"), desc="Open sublime-text"),
+    Key([mod, "shift"], "e", lazy.spawn("subl"), desc="Open sublime-text"),
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Window floating on/off"),
     Key([mod, "shift"], "i", lazy.spawn(term + " -e gtop"), desc="Open gtop"),
     Key([mod, "shift"], "n", lazy.spawn(termfloat + " -e ncmpcpp"), desc="Open ncmpcpp"),
@@ -502,23 +502,24 @@ cursor_warp = False
 
 floating_layout = layout.Floating(
     float_rules=[
+        *layout.Floating.default_float_rules,
         # Run the utility of `xprop` to see the wm class and name of an X client.
-        {'wmclass': 'confirm'},
-        {'wmclass': 'dialog'},
-        {'wmclass': 'download'},
-        {'wmclass': 'error'},
-        {'wmclass': 'file_progress'},
-        {'wmclass': 'notification'},
-        {'wmclass': 'splash'},
-        {'wmclass': 'toolbar'},
-        {'wmclass': 'confirmreset'},  # gitk
-        {'wmclass': 'makebranch'},  # gitk
-        {'wmclass': 'URxvt'},  # gitk
-        {'wmclass': 'maketag'},  # gitk
-        {'wmclass': 'feh'},  # gitk
-        {'wname': 'branchdialog'},  # gitk
-        {'wname': 'pinentry'},  # GPG key password entry
-        {'wmclass': 'ssh-askpass'},  # ssh-askpass
+        Match(wm_class='confirm'),
+        Match(wm_class='dialog'),
+        Match(wm_class='download'),
+        Match(wm_class='error'),
+        Match(wm_class='file_progress'),
+        Match(wm_class='notification'),
+        Match(wm_class='splash'),
+        Match(wm_class='toolbar'),
+        Match(wm_class='confirmreset'),  # gitk
+        Match(wm_class='makebranch'),  # gitk
+        Match(wm_class='URxvt'),  # gitk
+        Match(wm_class='maketag'),  # gitk
+        Match(wm_class='feh'),  # gitk
+        Match(title='branchdialog'),  # gitk
+        Match(title='pinentry'),  # GPG key password entry
+        Match(wm_class='ssh-askpass')  # ssh-askpass
 
     ],
     **layout_defaults,
@@ -536,14 +537,19 @@ app_rules = {
     "discord": "4"
 }
 
+app_float_pos = ("calcurse",)
+
 
 @hook.subscribe.client_new
 def grouper(window, windows=app_rules):
 
     windowtype = window.window.get_wm_class()[1]
+    # logger.warning(f'Ez a groupper {windowtype}')
+    # logger.warning(f'Ez a wkeys {windows.keys()}')
 
     # if the window is in our map
     for app in windows.keys():
+        # logger.warning(f'Ez a app {app}')
         if windowtype in app:
 
             window.togroup(windows[windowtype])
@@ -554,9 +560,6 @@ def grouper(window, windows=app_rules):
 # def go(client):
 #     logger.debug("rajt urgent config")
 #     client.group.cmd_toscreen()
-
-
-app_float_pos = ("calcurse",)
 
 
 @hook.subscribe.client_new
@@ -579,7 +582,7 @@ def go_float(window, windows=app_float_pos):
             window.tweak_float(x=my_screen_w - win_w - 30, y=40)
             count += 1
 
-    logger.warning(f'ez az count: {count}')
+    # logger.warning(f'ez az count: {count}')
     if (dialog or transient) and count != 1:
         window.floating = True
         my_screen_w = Display(":0").screen().width_in_pixels
