@@ -152,7 +152,7 @@ keys = [
 
     Key([mod, "shift"], "c", lazy.spawn("urxvt --geometry 70x20 -e calcurse"), desc="Open calcurse"),
     Key([mod, "shift"], "d", lazy.spawn("rofi_run -r"), desc="Open rofi run"),
-    Key([mod, "shift"], "e", lazy.spawn("subl"), desc="Open sublime-text"),
+    Key([mod, "shift"], "e", lazy.spawn("subl3"), desc="Open sublime-text"),
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Window floating on/off"),
     Key([mod, "shift"], "i", lazy.spawn(term + " -e gtop"), desc="Open gtop"),
     Key([mod, "shift"], "n", lazy.spawn(termfloat + " -e ncmpcpp"), desc="Open ncmpcpp"),
@@ -319,7 +319,7 @@ screens = [
                     disable_drag=True,
                     inactive=color.color1,
                     active=color.foreground,
-                    hide_unused=True,
+                    hide_unused=False,
                     # if set group label sets, small icons.
                     fontsize=20,
                 ),
@@ -566,8 +566,8 @@ def grouper(window, windows=app_rules):
 def go_float(window, windows=app_float_pos):
     win_cal = window.window.get_name()
     # logger.warning(f'ez az win_cal: {win_cal}')
-    dialog = window.window.get_wm_type() == 'dialog'
-    transient = window.window.get_wm_transient_for()
+    # dialog = window.window.get_wm_type() == 'dialog'
+    # transient = window.window.get_wm_transient_for()
 
     count = 0
     for app1 in app_float_pos:
@@ -583,19 +583,19 @@ def go_float(window, windows=app_float_pos):
             count += 1
 
     # logger.warning(f'ez az count: {count}')
-    if (dialog or transient) and count != 1:
-        window.floating = True
-        my_screen_w = Display(":0").screen().width_in_pixels
-        my_screen_h = Display(":0").screen().height_in_pixels
-        window.float_x = 0
-        window.float_y = 0
-        win_w = window.cmd_get_size()[0]
-        win_h = window.cmd_get_size()[1]
-        # logger.warning(my_screen_w)
-        # logger.warning(my_screen_h)
-        # logger.warning(win_w)
-        # logger.warning(win_h)
-        window.tweak_float(x=(my_screen_w // 2) - (win_w // 2), y=(my_screen_h // 2) - (win_h // 2))
+    # if (dialog or transient) and count != 1:
+    #     window.floating = True
+    #     my_screen_w = Display(":0").screen().width_in_pixels
+    #     my_screen_h = Display(":0").screen().height_in_pixels
+    #     window.float_x = 0
+    #     window.float_y = 0
+    #     win_w = window.cmd_get_size()[0]
+    #     win_h = window.cmd_get_size()[1]
+    #     # logger.warning(my_screen_w)
+    #     # logger.warning(my_screen_h)
+    #     # logger.warning(win_w)
+    #     # logger.warning(win_h)
+    #     window.tweak_float(x=(my_screen_w // 2) - (win_w // 2), y=(my_screen_h // 2) - (win_h // 2))
 
 
 # @hook.subscribe.client_new
