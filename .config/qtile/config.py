@@ -13,7 +13,7 @@ import clock
 import my_sensors
 from collections import namedtuple
 from typing import List  # noqa: F401
-# from libqtile.log_utils import logger
+from libqtile.log_utils import logger
 from Xlib.display import Display
 from libqtile import qtile
 
@@ -34,7 +34,8 @@ colors = {
     'color8': '#137957', 'color9': '#865b39',
     'color10': '#09a573', 'color11': '#95aa30',
     'color12': '#2593a6', 'color13': '#7c9c96',
-    'color14': '#29bdd1', 'color15': '#cbffff'
+    'color14': '#29bdd1', 'color15': '#cbffff',
+    'color16': '#000000'
 }
 
 values = (
@@ -268,7 +269,7 @@ extension_defaults = widget_defaults.copy()
 
 sep_set = dict(
     linewidth=3,
-    foreground=color.color0,
+    foreground=color.color16,
     # foreground="#000000",
     size_percent=100,
 )
@@ -561,9 +562,14 @@ app_float_pos = ("calcurse",)
 @hook.subscribe.client_new
 def go_float(window, windows=app_float_pos):
     win_cal = window.window.get_name()
+    # logger.warning(f'ez az win_cal: {win_cal}')
+    dialog = window.window.get_wm_type() == 'dialog'
+    transient = window.window.get_wm_transient_for()
 
+    count = 0
     for app1 in app_float_pos:
-        if win_cal in app1:
+        # logger.warning(f'ez az app1: {app1}')
+        if win_cal is not None and win_cal in app1:
             window.floating = True
             # window.cmd_set_size_floating(500, 500)
             my_screen_w = Display(":0").screen().width_in_pixels
@@ -571,14 +577,30 @@ def go_float(window, windows=app_float_pos):
             window.float_y = 0
             win_w = window.cmd_get_size()[0]
             window.tweak_float(x=my_screen_w - win_w - 30, y=40)
+            count += 1
 
-
-@hook.subscribe.client_new
-def floating_dialogs(window):
-    dialog = window.window.get_wm_type() == 'dialog'
-    transient = window.window.get_wm_transient_for()
-    if dialog or transient:
+    logger.warning(f'ez az count: {count}')
+    if (dialog or transient) and count != 1:
         window.floating = True
+        my_screen_w = Display(":0").screen().width_in_pixels
+        my_screen_h = Display(":0").screen().height_in_pixels
+        window.float_x = 0
+        window.float_y = 0
+        win_w = window.cmd_get_size()[0]
+        win_h = window.cmd_get_size()[1]
+        # logger.warning(my_screen_w)
+        # logger.warning(my_screen_h)
+        # logger.warning(win_w)
+        # logger.warning(win_h)
+        window.tweak_float(x=(my_screen_w // 2) - (win_w // 2), y=(my_screen_h // 2) - (win_h // 2))
+
+
+# @hook.subscribe.client_new
+# def floating_dialogs(window):
+#     dialog = window.window.get_wm_type() == 'dialog'
+#     transient = window.window.get_wm_transient_for()
+#     if dialog or transient:
+#         window.floating = True
 
 
 wmname = "LG3D"
