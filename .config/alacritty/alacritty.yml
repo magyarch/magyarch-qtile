@@ -1,3 +1,7 @@
+
+env:
+  WINIT_X11_SCALE_FACTOR: "1.0"
+
 # Window Customization
 window:
   dimensions:
