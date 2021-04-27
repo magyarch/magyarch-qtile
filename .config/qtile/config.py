@@ -51,7 +51,7 @@ with open(home + "/.Xresources") as f:
 
 for x in data:
     for y in values:
-        # match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', x.split(":")[1].strip())
+        # Check valid color code.
         if y == x.split(":")[0].strip().replace("*", "") and re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', x.split(":")[1].strip()):
             colors[y] = x.split(":")[1].strip()
 
@@ -152,7 +152,7 @@ keys = [
 
     Key([mod, "shift"], "c", lazy.spawn("urxvt --geometry 70x20 -e calcurse"), desc="Open calcurse"),
     Key([mod, "shift"], "d", lazy.spawn("rofi_run -r"), desc="Open rofi run"),
-    Key([mod, "shift"], "e", lazy.spawn("subl3"), desc="Open sublime-text"),
+    Key([mod, "shift"], "e", lazy.spawn("subl"), desc="Open sublime-text"),
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Window floating on/off"),
     Key([mod, "shift"], "i", lazy.spawn(term + " -e gtop"), desc="Open gtop"),
     Key([mod, "shift"], "n", lazy.spawn(termfloat + " -e ncmpcpp"), desc="Open ncmpcpp"),
@@ -259,7 +259,8 @@ widget_defaults = dict(
     font='JetBrains Mono',
     fontsize=12,
     padding=3,
-    background=color.background,
+    # background=color.background,
+    background=[color.background, color.color16],
     foreground=color.foreground,
     colour_no_updates=color.foreground,
     colour_have_updates=color.color4,
@@ -307,8 +308,10 @@ screens = [
                     rounded=False,
                     center_aligned=True,
                     highlight_method="block",
-                    this_current_screen_border=color.color0,
-                    this_screen_border=color.color0,
+                    # this_current_screen_border=color.color0,
+                    this_current_screen_border=[color.color16, color.color4],
+                    # this_screen_border=color.color0,
+                    this_screen_border=[color.color16, color.color4],
                     urgent_alert_method="block",
                     urgent_border=color.color10,
                     urgent_text="#000000",
@@ -504,15 +507,15 @@ floating_layout = layout.Floating(
     float_rules=[
         *layout.Floating.default_float_rules,
         # Run the utility of `xprop` to see the wm class and name of an X client.
-        Match(wm_class='confirm'),
-        Match(wm_class='dialog'),
-        Match(wm_class='download'),
-        Match(wm_class='error'),
-        Match(wm_class='file_progress'),
-        Match(wm_class='notification'),
-        Match(wm_class='splash'),
-        Match(wm_class='toolbar'),
-        Match(wm_class='confirmreset'),  # gitk
+        # Match(wm_class='confirm'),
+        # Match(wm_class='dialog'),
+        # Match(wm_class='download'),
+        # Match(wm_class='error'),
+        # Match(wm_class='file_progress'),
+        # Match(wm_class='notification'),
+        # Match(wm_class='splash'),
+        # Match(wm_class='toolbar'),
+        # Match(wm_class='confirmreset'),  # gitk
         Match(wm_class='makebranch'),  # gitk
         Match(wm_class='URxvt'),  # gitk
         Match(wm_class='maketag'),  # gitk
