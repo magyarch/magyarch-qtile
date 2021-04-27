@@ -270,7 +270,7 @@ extension_defaults = widget_defaults.copy()
 
 sep_set = dict(
     linewidth=3,
-    foreground=color.color16,
+    foreground=[color.color16, color.color4],
     # foreground="#000000",
     size_percent=100,
 )
