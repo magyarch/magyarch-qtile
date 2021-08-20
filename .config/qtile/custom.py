@@ -99,7 +99,7 @@ class Memory(base.InLoopPollText):
     def poll(self):
         use = self.get_stats()
         self.layout.colour = self.foreground_alert if use > self.threshold else self.foreground
-        return use
+        return str(use)
 
 
 class Net(base.InLoopPollText):
