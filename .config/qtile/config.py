@@ -536,7 +536,7 @@ app_rules = {
     "firefox": "1",
     "Brave-browser": "1",
     "Sublime_text": "2",
-    "Subl3": "2",
+    "Subl": "2",
     "discord": "4"
 }
 
