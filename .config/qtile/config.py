@@ -430,8 +430,8 @@ sensor = my_sensors.SENSORS(
 )
 
 check_update = widget.CheckUpdates(
-    # distro="Arch_yay",
-    custom_command="cat $HOME/.cache/cronyay",
+    distro="Arch_paru",
+    # custom_command="cat $HOME/.cache/cronyay",
     no_update_string="0",
     display_format="{updates:>2}",
     mouse_callbacks={
