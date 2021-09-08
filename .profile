@@ -1,6 +1,10 @@
 #!/bin/sh
 # Profile file. Runs on login.
 
+# Icons path errors dunst and X.org
+export XDG_DATA_DIRS=/usr/share/:/usr/local/share/
+
+
 # Adds `~/.scripts` and all subdirectories to $PATH
 export PATH="$PATH:$(du "$HOME/.local/bin/" | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 export EDITOR="nvim"
