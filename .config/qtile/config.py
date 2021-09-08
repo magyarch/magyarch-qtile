@@ -13,7 +13,7 @@ import clock
 import my_sensors
 from collections import namedtuple
 from typing import List  # noqa: F401
-# from libqtile.log_utils import logger
+from libqtile.log_utils import logger
 from Xlib.display import Display
 from libqtile import qtile
 
@@ -23,7 +23,7 @@ mod = "mod4"
 term = getenv("TERMINAL")
 home = getenv("HOME")
 browser = getenv("BROWSER")
-termfloat = getenv("TERMFLOAT") + " --geometry 110x30 "
+termfloat = str(getenv("TERMFLOAT") + " --geometry 110x30 ")
 
 colors = {
     'background': '#2f2b26', 'foreground': '#c3cdc8',
@@ -57,6 +57,27 @@ for x in data:
 
 Colors = namedtuple('Colors', sorted(colors))
 color = Colors(**colors)
+# @lazy.function
+
+
+# @lazy.function
+def open_menu(qtile):
+    # logger.warning(f'sas {qtile.layout}')
+    for screen in qtile.screens:
+        logger.warning(f'as {screen.group.layout}')
+        logger.warning(f'sas {screen}')
+    # qtile.cmd_spawn("notify-qtile-update")
+        # for c in screen.group.layout:
+        #     logger.warning(f'lala {c}')
+        if not screen.group.windows:
+            qtile.cmd_spawn("xmenu.sh")
+        # for window in screen.group.windows:
+        #     logger.warning(f'wwas {window}')
+        #     logger.warning(f'qwwas {qtile.current_window}')
+        #     if window != qtile.current_window:
+        #         logger.info("clean group")
+        #         # window.kill()
+        #         qtile.cmd_spawn("notify-qtile-update")
 
 
 keys = [
@@ -170,6 +191,7 @@ keys = [
     Key([mod, "mod1"], "space", lazy.next_layout(), desc="Next layout"),
     Key([mod, "mod1"], "Tab", lazy.screen.prev_group(), desc="Sreen prev group"),
 
+
     # mod1 (Alt) +
 
     Key(["mod1"], "Tab", lazy.screen.next_group(), desc="Sreen next group"),
@@ -268,6 +290,9 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+
+# WIDGETS SECTION
+
 sep_set = dict(
     linewidth=3,
     foreground=[color.color16, color.color4],
@@ -300,181 +325,166 @@ def kill_calcurse():
     qtile.cmd_spawn("calcursekill")
 
 
+groupbox = widget.GroupBox(
+    rounded=False,
+    center_aligned=True,
+    highlight_method="block",
+    # this_current_screen_border=color.color0,
+    this_current_screen_border=[color.color16, color.color4],
+    # this_screen_border=color.color0,
+    this_screen_border=[color.color16, color.color4],
+    urgent_alert_method="block",
+    urgent_border=color.color10,
+    urgent_text="#000000",
+    borderwidth=5,
+    block_highlight_text_color=color.color15,
+    margin_x=2,
+    margin_y=3,
+    disable_drag=True,
+    inactive=color.color1,
+    active=color.foreground,
+    hide_unused=False,
+    # if set group label sets, small icons.
+    fontsize=20,
+)
+
+currentlayouticon = widget.CurrentLayoutIcon(
+    scale=0.5,
+)
+
+prompt = widget.Prompt(
+    background='#2e8b57',
+    foreground='#000000',
+    cursor_color='000000',
+    prompt="Search: ",
+    # markup=False,
+    # bell_style="visual",
+    # max_history=100,
+)
+
+mpd = mpdwidget.Mpd(
+    fmt_playing='%e/%l %s [%v%%]',
+    fmt_stopped='',
+    reconnect=True,
+    reconnect_interval=1,
+    foreground_progress="#ff8c00",
+)
+
+wigetbox = widget.WidgetBox(
+    text_open="➡ ",
+    text_closed='⬅ ',
+    fontsize=20,
+    widgets=[mpd]
+)
+
+sep = widget.Sep(
+    **sep_set,
+)
+
+windowname = widget.WindowName()
+
+
+wttr = wttrweather.WttrWeather(
+    location="Budapest",
+
+    # Format
+    # c    Weather condition,
+    # C    Weather condition textual name,
+    # h    Humidity,
+    # t    Temperature (Actual),
+    # f    Temperature (Feels Like),
+    # w    Wind,
+    # l    Location,
+    # m    Moonphase 🌑🌒🌓🌔🌕🌖🌗🌘,
+    # p    precipitation (mm),
+    # P    pressure (hPa),
+    format="{c}{t:>6}",
+    units='&m',
+    # update_interval=3600,
+)
+
+mem = custom.Memory(
+    fmt="🚚{:>4}%",
+)
+
+udate_tb = widget.TextBox(
+    text="📦",
+    mouse_callbacks={
+        'Button1': open_update,
+        'Button3': open_update_notify
+    },
+)
+
+sensor = my_sensors.SENSORS(
+    # Run $HOME/.config/qtile/scripts/temp_data
+    # Output:
+    #       Composite: 38.9°C
+    #       Sensor 1: 38.9°C
+    #       Sensor 2: 44.9°C
+    #       ...
+    # set:
+    # format="{Composite}" or format="{Composite} {Sensor 1}"
+
+    format="🌡️ {Tccd1:>6}",
+    update_interval=2.0
+)
+
+check_update = widget.CheckUpdates(
+    # distro="Arch_yay",
+    custom_command="cat $HOME/.cache/cronyay",
+    no_update_string="0",
+    display_format="{updates:>2}",
+    mouse_callbacks={
+        'Button1': open_update,
+        'Button3': open_update_notify
+    },
+    update_interval=600,
+)
+
+cpu = widget.CPU(
+    format="🏭 {load_percent:>5}%",
+    opacity=0.5,
+)
+
+emoji_volume = widget.Volume(
+    emoji=True,
+    step=5,
+)
+
+text_volume = widget.Volume(
+    fmt="{:>4}",
+    step=5,
+    # emoji=True,
+)
+
+clock = clock.Clock(
+    format="⏳ %H:%M",
+    format_alt="📆 %Y-%m-%d %H:%M",
+    mouse_callbacks={
+        'Button4': kill_calcurse,
+        'Button5': open_calcurse
+    },
+)
+
+systray = widget.Systray()
+
+
+power = widget.TextBox(
+    text="",
+    padding=5,
+    fontsize=20,
+    mouse_callbacks={'Button1': open_power},
+)
+
+# WIDGETS SECTION END
+
 screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.GroupBox(
-                    rounded=False,
-                    center_aligned=True,
-                    highlight_method="block",
-                    # this_current_screen_border=color.color0,
-                    this_current_screen_border=[color.color16, color.color4],
-                    # this_screen_border=color.color0,
-                    this_screen_border=[color.color16, color.color4],
-                    urgent_alert_method="block",
-                    urgent_border=color.color10,
-                    urgent_text="#000000",
-                    borderwidth=5,
-                    block_highlight_text_color=color.color15,
-                    margin_x=2,
-                    margin_y=3,
-                    disable_drag=True,
-                    inactive=color.color1,
-                    active=color.foreground,
-                    hide_unused=False,
-                    # if set group label sets, small icons.
-                    fontsize=20,
-                ),
-
-                widget.CurrentLayoutIcon(
-                    scale=0.5,
-                ),
-                # widget.Prompt(
-                #     background='#2e8b57',
-                #     foreground='#000000',
-                #     cursor_color='000000',
-                #     prompt="Search: ",
-                #     # markup=False,
-                #     # bell_style="visual",
-                #     # max_history=100,
-                # ),
-
-                widget.WindowName(),
-                # widget.TextBox("default config", name="default"),
-
-
-                mpdwidget.Mpd(
-                    fmt_playing='%e/%l %s [%v%%]',
-                    fmt_stopped='',
-                    reconnect=True,
-                    reconnect_interval=1,
-                    foreground_progress="#ff8c00",
-                ),
-                # widget.Mpd2(),
-
-                widget.Sep(
-                    **sep_set,
-                ),
-
-                wttrweather.WttrWeather(
-                    location="Budapest",
-
-                    # Format
-                    # c    Weather condition,
-                    # C    Weather condition textual name,
-                    # h    Humidity,
-                    # t    Temperature (Actual),
-                    # f    Temperature (Feels Like),
-                    # w    Wind,
-                    # l    Location,
-                    # m    Moonphase 🌑🌒🌓🌔🌕🌖🌗🌘,
-                    # p    precipitation (mm),
-                    # P    pressure (hPa),
-                    format="{c}{t:>6}",
-                    units='&m',
-                    # update_interval=3600,
-                ),
-                widget.Sep(
-                    **sep_set
-                ),
-
-                custom.Memory(
-                    fmt="🚚{:>4}%",
-                ),
-
-                widget.Sep(
-                    **sep_set,
-                ),
-
-                widget.TextBox(
-                    text="📦",
-                    mouse_callbacks={
-                        'Button1': open_update,
-                        'Button3': open_update_notify
-                    },
-                ),
-
-                widget.CheckUpdates(
-                    # distro="Arch_yay",
-                    custom_command="paru -Qua",
-                    display_format="{updates:>2}",
-                    mouse_callbacks={
-                        'Button1': open_update,
-                        'Button3': open_update_notify
-                    },
-                    update_interval=600,
-                ),
-
-                widget.Sep(
-                    **sep_set
-                ),
-
-
-                my_sensors.SENSORS(
-                    # Run $HOME/.config/qtile/scripts/temp_data
-                    # Output:
-                    #       Composite: 38.9°C
-                    #       Sensor 1: 38.9°C
-                    #       Sensor 2: 44.9°C
-                    #       ...
-                    # set:
-                    # format="{Composite}" or format="{Composite} {Sensor 1}"
-
-                    format="🌡️ {Tccd1:>6}",
-                    update_interval=2.0
-                ),
-
-                widget.Sep(
-                    **sep_set
-                ),
-
-                widget.CPU(
-                    format="🏭 {load_percent:>5}%",
-                    opacity=0.5,
-                ),
-
-                widget.Sep(
-                    **sep_set
-                ),
-
-                widget.Volume(
-                    emoji=True,
-                    step=5,
-                ),
-                widget.Volume(
-                    fmt="{:>4}",
-                    step=5,
-                    # emoji=True,
-                ),
-
-                widget.Sep(
-                    **sep_set
-                ),
-
-                clock.Clock(
-                    format="⏳ %H:%M",
-                    format_alt="📆 %Y-%m-%d %H:%M",
-                    mouse_callbacks={
-                        'Button4': kill_calcurse,
-                        'Button5': open_calcurse
-                    },
-                ),
-                widget.Sep(
-                    **sep_set
-                ),
-                widget.TextBox(
-                    text="",
-                    padding=5,
-                    fontsize=20,
-                    mouse_callbacks={'Button1': open_power},
-                ),
-                widget.Sep(
-                    **sep_set
-                ),
-
-                # widget.QuickExit(),
-                widget.Systray(),
+                groupbox, currentlayouticon, windowname, wigetbox, sep, wttr, sep, mem, sep,
+                udate_tb, check_update, sep, sensor, sep, cpu, sep, emoji_volume, text_volume,
+                sep, clock, sep, power, sep, systray,
             ],
             30,
             margin=[0, 0, 5, 0],
@@ -487,13 +497,16 @@ screens = [
 
 ]
 
+
 # Drag floating layouts.
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(),
          start=lazy.window.get_position(), desc="Move window"),
     Drag([mod], "Button3", lazy.window.set_size_floating(),
          start=lazy.window.get_size(), desc="Resize window"),
-    Click([mod], "Button2", lazy.window.bring_to_front(), desc="Bring to front")
+    Click([mod], "Button2", lazy.window.bring_to_front(), desc="Bring to front"),
+    # Click([], "Button3", lazy.function(open_menu), desc="Bring to front"),
+
 ]
 
 dgroups_key_binder = None
@@ -519,6 +532,7 @@ floating_layout = layout.Floating(
         Match(wm_class='makebranch'),  # gitk
         Match(wm_class='URxvt'),  # gitk
         Match(wm_class='maketag'),  # gitk
+        Match(wm_class='Yad'),  # gitk
         Match(wm_class='feh'),  # gitk
         Match(title='branchdialog'),  # gitk
         Match(title='pinentry'),  # GPG key password entry
@@ -536,8 +550,10 @@ app_rules = {
     "firefox": "1",
     "Brave-browser": "1",
     "Sublime_text": "2",
+    "Subl3": "2",
     "Subl": "2",
-    "discord": "4"
+    "discord": "4",
+    "GitKraken": "6"
 }
 
 app_float_pos = ("calcurse",)
@@ -546,17 +562,20 @@ app_float_pos = ("calcurse",)
 @hook.subscribe.client_new
 def grouper(window, windows=app_rules):
 
-    windowtype = window.window.get_wm_class()[1]
-    # logger.warning(f'Ez a groupper {windowtype}')
-    # logger.warning(f'Ez a wkeys {windows.keys()}')
+    try:
+        windowtype = window.window.get_wm_class()[1]
+        # logger.warning(f'Ez a groupper {windowtype}')
+        # logger.warning(f'Ez a wkeys {windows.keys()}')
 
-    # if the window is in our map
-    for app in windows.keys():
-        # logger.warning(f'Ez a app {app}')
-        if windowtype in app:
+        # if the window is in our map
+        for app in windows.keys():
+            # logger.warning(f'Ez a app {app}')
+            if windowtype in app:
 
-            window.togroup(windows[windowtype])
-            window.group.cmd_toscreen(toggle=False)
+                window.togroup(windows[windowtype])
+                window.group.cmd_toscreen(toggle=False)
+    except Exception as e:
+        logger.warning(f'Ez a grouper error: {e}')
 
 
 # @hook.subscribe.client_urgent_hint_changed
