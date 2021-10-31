@@ -6,8 +6,14 @@ if [ $DESKTOP_SESSION == "qtile" ]
 then
 
     # setxkbmap -option caps:super -variant altgr-intl && killall xcape 2>/dev/null ; xcape -e 'Super_L=Escape' &
-    # Add args --experimental-backends if use blur.
-    picom  --config ~/.config/picom.conf &       # xcompmgr for transparency
+    
+    if [ "$(facter  virtual)" = "physical" ]
+    then
+        # Add args --experimental-backends if use blur.
+        picom --experimental-backends --config ~/.config/picom.conf &
+    else
+        picom --config ~/.config/picom_virt.conf &
+    fi
     dunst &                 # dunst for notifications
     /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
     # feh --no-fehbg --bg-scale /usr/share/backgrounds/magyarch/wallpaper.png &
